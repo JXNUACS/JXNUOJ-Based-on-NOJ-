@@ -106,7 +106,9 @@ return [
     'menu_titles' => [
         'dashboard'         => '仪表盘',
         'adminCatg'         => '管理员',
-        'users'             => '用户',
+        'users'             => '管理员用户',
+        'roles'             => '用户角色',
+        'permissions'       => '用户权限',
         'abuses'            => '违规行为',
         'carousels'         => '轮播图',
         'announcements'     => '通知与公告',
