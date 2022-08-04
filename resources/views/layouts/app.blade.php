@@ -128,7 +128,7 @@
                     @endif
 		    @if($userNotContestAccount)
                     <li class="nav-item">
-                        <a class="nav-link @if ($navigation === "Typing") active @endif" href="/typing"> <i class="MDI account-multiple"></i> {{__('navigation.typing')}}</a>
+                        <a class="nav-link @if ($navigation === "Typing") active @endif" href="/typing/index.html"> <i class="MDI account-multiple"></i> {{__('navigation.typing')}}</a>
                     </li>
                     @endif
                     @if($userNotContestAccount)
