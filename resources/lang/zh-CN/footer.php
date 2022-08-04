@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'description'   => ':name是一个由方糖智行网络科技与南京邮电大学ICPC校队共同研发的下一代在线测评系统。',
+    'description'   => ':name是一个基于NOJ(由方糖智行网络科技开发)，由江西师范大学计算机科学协会二次开发并运营的在线评测系统。',
     'services'      => '服务',
     'developments'  => '开发',
     'supports'      => '支持',
