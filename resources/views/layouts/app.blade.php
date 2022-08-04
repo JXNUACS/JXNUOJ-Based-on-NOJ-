@@ -119,6 +119,16 @@
                     @if($userNotContestAccount)
                     <li class="nav-item">
                         <a class="nav-link @if ($navigation === "Group") active @endif" href="/group"> <i class="MDI account-multiple"></i> {{__('navigation.group')}}</a>
+		    </li>		    
+                    @endif
+		    @if($userNotContestAccount)
+                    <li class="nav-item">
+                        <a class="nav-link @if ($navigation === "Blog") active @endif" href="/acsblog"> <i class="MDI account-multiple"></i> {{__('navigation.blog')}}</a>
+                    </li>
+                    @endif
+		    @if($userNotContestAccount)
+                    <li class="nav-item">
+                        <a class="nav-link @if ($navigation === "Typing") active @endif" href="/typing"> <i class="MDI account-multiple"></i> {{__('navigation.typing')}}</a>
                     </li>
                     @endif
                     @if($userNotContestAccount)

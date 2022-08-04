@@ -8,6 +8,8 @@ return [
     'rank'          => '排行榜',
     'contest'       => '比赛',
     'group'         => '群组',
+    'blog'          => '博客',
+    'typing'        => 'TYPING',
     'search'        => '站内搜索',
     'dashboard'     => '个人主页',
     'settings'      => '设置',
