@@ -11,7 +11,7 @@ return [
     | login page.
     |
     */
-    'name' => 'Admin Portal',
+    'name' => 'JXNUOJ Admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +22,7 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo' => '<img src="/static/img/icon/icon-white.png" style="height:20px;"> Admin Portal',
+    'logo' => '<img src="/favicon.png" style="height:20px;"> JXNUOJ',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ return [
     | '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo-mini' => '<img src="/static/img/icon/icon-white.png" style="height:20px;">',
+    'logo-mini' => '<img src="/favicon.png" style="height:20px;">',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ return [
     | Html title for all pages.
     |
     */
-    'title' => 'Admin Portal',
+    'title' => 'JXNUOJ Admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -230,14 +230,14 @@ return [
     | Indicates whether to check route permission.
     |--------------------------------------------------------------------------
     */
-    'check_route_permission' => false,
+    'check_route_permission' => true,
 
     /*
     |--------------------------------------------------------------------------
     | Indicates whether to check menu roles.
     |--------------------------------------------------------------------------
     */
-    'check_menu_roles'       => false,
+    'check_menu_roles'       => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -247,7 +247,7 @@ return [
     | Set a default avatar for newly created users.
     |
     */
-    'default_avatar' => '/static/img/avatar/noj.png',
+    'default_avatar' => '/favicon.png',
 
     /*
     |--------------------------------------------------------------------------
