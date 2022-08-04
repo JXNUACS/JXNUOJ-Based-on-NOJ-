@@ -6,6 +6,7 @@ use App\Models\Eloquent\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Log;
 
 class UserCreator extends Controller
 {
@@ -71,6 +72,7 @@ class UserCreator extends Controller
 			} catch(Exception $err) {
 				return response()->json(['code' => 500, 'msg' => '发生异常！创建失败！'.err]);
 			}
+            Log::channel('app')->info("User \"$name\" has been created by external API! Email: `$email`");
 			return response() -> json(['code' => 200, 'message' => 'Created Successfully!']);
 		}
 	}
