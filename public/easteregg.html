@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JXNUOJ's EasterEgg</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 50px auto;
+            box-shadow: -2px -2px 2px #efefef, 5px 5px 5px #b9b9b9;
+        }
+    </style>
+</head>
+<body>
+<canvas id="chess" width="450px" height="450px"></canvas>
+<script>
+    //棋局
+    var chessBoard = []
+    //游戏是否结束
+    var over = false
+
+    // 赢法数组
+    var winMethods = []
+
+    //人类方赢法统计数组
+    var humanChessCount = []
+    //计算机方赢法统计数组
+    var computerChessCount = []
+
+    //构造棋局
+    for (var i = 0; i < 15; i++) {
+        chessBoard[i] = []
+        for(var j = 0; j < 15; j++) {
+            chessBoard[i][j] = 0
+        }
+    }
+
+    //构造赢法数组
+    for (var i = 0; i < 15; i++) {
+        winMethods[i] = []
+        for(var j = 0; j < 15; j++) {
+            winMethods[i][j] = []
+        }
+    }
+
+    //赢法数组：纵向的五子相连，表示一种赢法
+    var count = 0 //count表示赢法数组个数
+    for(var i = 0; i < 15; i++) {
+        for(var j = 0; j<11; j++) {
+            for(var k = 0; k < 5; k++) {
+                winMethods[i][j+k][count] = true
+            }
+            count++
+        }
+    }
+    //赢法数组：横向的五子相连，表示一种赢法
+    for(var i = 0; i < 15; i++) {
+        for(var j = 0; j<11; j++) {
+            for(var k = 0; k < 5; k++) {
+                winMethods[j+k][i][count] = true
+            }
+            count++
+        }
+    }
+    //赢法数组：左斜向的五子相连，表示一种赢法
+    for(var i = 0; i < 11; i++) {
+        for(var j = 0; j<11; j++) {
+            for(var k = 0; k < 5; k++) {
+                winMethods[i+k][j+k][count] = true
+            }
+            count++
+        }
+    }
+    //赢法数组：右斜向的五子相连，表示一种赢法
+    for(var i = 0; i < 11; i++) {
+        for(var j = 14; j>3; j--) {
+            for(var k = 0; k < 5; k++) {
+                winMethods[i+k][j-k][count] = true
+            }
+            count++
+        }
+    }
+
+    //count表示共572种赢法（15*15棋局下），初始化双方在572种赢法下的落子情况；
+    // 比如humanWin[i]表示人类方在第i种赢法下的落子情况,连一子则加1，当humanWin[i]=3时表示人类在第i种赢法下连了3颗落子，humanChessCount[i]=5则胜利
+    for(var i = 0; i < count; i++) {
+        humanChessCount[i] = 0
+        computerChessCount[i] = 0
+    }
+
+    var me = true
+    var chess = document.getElementById('chess')
+    var context = chess.getContext('2d')
+
+    context.strokeStyle = '#bfbfbf'
+
+    //棋局初始化
+    for(var i = 0; i < 15; i++) {
+        context.moveTo(15 + i * 30, 15)
+        context.lineTo(15 + i * 30, 435)
+        context.stroke()
+        context.moveTo(15, 15 + i * 30)
+        context.lineTo(435, 15 + i * 30)
+        context.stroke()
+    }
+
+
+    var oneStep = function (i, j, me) {
+        context.beginPath()
+        context.arc(15 + i * 30, 15 + j * 30, 13, 0, 2 * Math.PI)
+        context.closePath()
+        var gradient = context.createRadialGradient(15 + i * 30 + 2, 15 + j * 30 - 2, 15, 15 + i * 30 + 2, 15 + j * 30 - 2, 0)
+        if (me) {
+            gradient.addColorStop(0, '#0a0a0a')
+            gradient.addColorStop(1, '#636766')
+        } else {
+            gradient.addColorStop(0, '#d1d1d1')
+            gradient.addColorStop(1, '#f9f9f9')
+        }
+        context.fillStyle = gradient
+        context.fill()
+    }
+
+    chess.onclick = function (e) {
+        if (over || !me) {return}
+        var x = e.offsetX
+        var y = e.offsetY
+        var i = Math.floor(x / 30)
+        var j = Math.floor(y / 30)
+        if (chessBoard[i][j] === 0) {
+            oneStep(i, j, me)
+            chessBoard[i][j] = 1 //1表示人类落子
+            //判断有没有取胜
+            for(var k = 0; k < count; k++) { //遍历572种赢法
+                if (winMethods[i][j][k]) { //如果在当前落子属于572种赢法下的某一种情况
+                    humanChessCount[k]++ //人类方在第k赢法下落子+1
+                    computerChessCount[k] = -1 //计算机方则在该种情况下不可能胜利了，直接设置为-1（5为胜利）
+                    if (humanChessCount[k] == 5) {
+                        window.alert('大佬，你赢了')
+                        over = true
+                    }
+                }
+            }
+
+            if (!over) {
+                me = !me
+                computerAI()
+            }
+        }
+    }
+
+    var computerAI = function () {
+        var humanScore = [] //某个空白位置点上，人类在各种赢法下的汇总分数
+        var computerScore = [] //某个空白位置点上，计算机在各种赢法下的汇总分数
+        var max = 0
+        var u = 0, v = 0 //计算机下一步落子坐标
+
+        //计算机每次落子时，先初始化棋局双方得分，所有点上双方均为0分
+        for(var i = 0; i < 15; i++) {
+            humanScore[i] = []
+            computerScore[i] = []
+            for(var j = 0; j< 15; j++) {
+                humanScore[i][j] = 0
+                computerScore[i][j] = 0
+            }
+        }
+
+        //计算机每次落子时，最多遍历15*15*527（约13万）次，逐次递减，重新计算当前棋局双方的得分情况：每个空白位置上会有572种赢法，假设每种赢法下双方的得分情况
+        for(var i = 0; i < 15; i++) {
+            for(var j = 0; j< 15;j++) {
+                if (chessBoard[i][j] == 0) { //遍历棋局的所有空白点，统计双方在这些位置点上的所有种赢法下的汇总分数，这一步是计算机落子的依据
+                    for (var k = 0; k < count; k++) {
+                        if (winMethods[i][j][k]) {
+                            if (humanChessCount[k] == 1) { //假设这个空白位置点（i,j）是人类第k种赢法下的第1颗子，则人类得分+200
+                                humanScore[i][j] += 200
+                            } else if(humanChessCount[k] == 2) { //假设这个空白位置点（i,j）是人类第k种赢法下的第2颗子，则人类得分+400
+                                humanScore[i][j] += 400
+                            } else if(humanChessCount[k] == 3) { //假设这个空白位置点（i,j）是人类第k种赢法下的第3颗子，则人类得分+2000
+                                humanScore[i][j] += 2000
+                            } else if(humanChessCount[k] == 4) { //假设这个空白位置点（i,j）是人类第k种赢法下的第4颗子，则人类得分+10000
+                                humanScore[i][j] += 10000
+                            }
+
+                            if (computerChessCount[k] == 1) {
+                                computerScore[i][j] += 220
+                            } else if(computerChessCount[k] == 2) {
+                                computerScore[i][j] += 420
+                            } else if(computerChessCount[k] == 3) {
+                                computerScore[i][j] += 2100
+                            } else if(computerChessCount[k] == 4) {
+                                computerScore[i][j] += 20000
+                            }
+                        }
+                    }
+                    console.log('空白坐标（'+i+','+j+')'+'处，人类在所有赢法下的汇总分数：'+ humanScore[i][j])
+                    console.log('空白坐标（'+i+','+j+')'+'处，计算机在所有赢法下的汇总分数：'+ humanScore[i][j])
+
+                    //取对人类得分最小或者对计算机得分最大的位置进行落子
+                    if (humanScore[i][j] > max) {
+                        max = humanScore[i][j]
+                        u = i
+                        v = j
+                    } else if(humanScore[i][j] == max) {
+                        if (computerScore[i][j] > computerScore[u][v]) {
+                            u = i
+                            v = j
+                        }
+                    }
+
+                    if (computerScore[i][j] > max) {
+                        max = computerScore[i][j]
+                        u = i
+                        v = j
+                    } else if(computerScore[i][j] == max) {
+                        if (humanScore[i][j] > humanScore[u][v]) {
+                            u = i
+                            v = j
+                        }
+                    }
+                }
+            }
+        }
+
+        oneStep(u, v, false)
+        chessBoard[u][v] = 2
+
+        for(var k = 0; k < count; k++) {
+            if (winMethods[u][v][k]) {
+                computerChessCount[k]++
+                humanChessCount[k] = -1
+                if (computerChessCount[k] == 5) {
+                    window.alert('大佬，你输了，再接再厉')
+                    over = true
+                }
+            }
+        }
+
+        if (!over) {
+            me = !me
+        }
+    }
+</script>
+</body>
+</html>
