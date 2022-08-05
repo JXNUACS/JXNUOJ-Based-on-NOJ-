@@ -30,7 +30,7 @@ class UserCreator extends Controller
 		else{
 			//return 'SUCCESS!!!!';
 	        	$user_info=[
-	        		'name' => $request->userclass.$request->username,
+	        		'name' => '22级-'.$request->userclass.'-'.$request->username,
 				'email' => $request->email,
 				'password' => Hash::make('JxnuCie2022'.$request->serial),
 				'avatar' => "/static/img/avatar/default.png",
