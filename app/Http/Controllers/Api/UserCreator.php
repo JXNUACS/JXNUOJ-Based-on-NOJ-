@@ -28,20 +28,24 @@ class UserCreator extends Controller
 			return response() -> json(['code' => 401, 'message' => 'Verified Error! Please check the key!']);
 		}
 		else{
-			//return 'SUCCESS!!!!';
-	        	$user_info=[
-	        		'name' => '22级-'.$request->userclass.'-'.$request->username,
-				'email' => $request->email,
-				'password' => Hash::make('JxnuCie2022'.$request->serial),
-				'avatar' => "/static/img/avatar/default.png",
-				'contest_account' => null,
-				'professional_rate' => 1500
+            if(User::where('email', '=', $request->email)->exists()){
+                Log::channel('app')->info("[Request Again] $request->username has been resisted!");
+                response() -> json(['code' => 200, 'message' => 'Already Exists!']);
+            }
+	        $user_info=[
+	        	'name' => '22级-'.$request->userclass.'-'.$request->username,
+			    'email' => $request->email,
+			    'password' => Hash::make('JxnuCie2022'.$request->serial),
+			    'avatar' => "/static/img/avatar/default.png",
+			    'contest_account' => null,
+			    'professional_rate' => 1500
 			];
 			try{
 				User::create($user_info);
 			} catch (Exception $err) {
 				return response()->json(['code' => 500,'msg' => '发生异常！创建失败. 错误信息：'.err]);
 			}
+            Log::channel('app')->info("[Register Success] $request->username has been resisted!");
 			return response() -> json(['code' => 200, 'message' => 'Created Successfully!']);
 		}
 	}
