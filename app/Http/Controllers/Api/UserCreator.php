@@ -30,7 +30,7 @@ class UserCreator extends Controller
 		else{
             if(User::where('email', '=', $request->email)->exists()){
                 Log::channel('app')->info("[Request Again] $request->username has been resisted!");
-                response() -> json(['code' => 200, 'message' => 'Already Exists!']);
+                return response() -> json(['code' => 200, 'message' => 'Already Exists!']);
             }
 	        $user_info=[
 	        	'name' => '22级-'.$request->userclass.'-'.$request->username,
