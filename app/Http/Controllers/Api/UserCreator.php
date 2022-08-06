@@ -29,7 +29,7 @@ class UserCreator extends Controller
 		}
 		else{
             if(User::where('email', '=', $request->email)->exists()){
-                Log::channel('app')->info("[Request Again] $request->username has been resisted!");
+                Log::warning("[Request Again] $request->username has been resisted!");
                 return response() -> json(['code' => 200, 'message' => 'Already Exists!']);
             }
 	        $user_info=[
@@ -45,7 +45,7 @@ class UserCreator extends Controller
 			} catch (Exception $err) {
 				return response()->json(['code' => 500,'msg' => '发生异常！创建失败. 错误信息：'.err]);
 			}
-            Log::channel('app')->info("[Register Success] $request->username has been resisted!");
+            Log::info("[Register Success] $request->username has been resisted!");
 			return response() -> json(['code' => 200, 'message' => 'Created Successfully!']);
 		}
 	}
